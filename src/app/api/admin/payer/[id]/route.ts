@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getUser } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 
 export async function PUT(
   request: NextRequest,
@@ -10,7 +10,7 @@ export async function PUT(
   const body = await request.json();
   const supabase = await createClient();
 
-  const user = await getUser();
+  const user = await requireUser();
   const userEmail = user?.email ?? "unknown";
 
   // Auto-set recredentialing_due when status changes to Approved/Active

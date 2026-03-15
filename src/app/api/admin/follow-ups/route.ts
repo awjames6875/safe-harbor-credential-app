@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getUser } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 
 export async function GET() {
   const supabase = await createClient();
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   const supabase = await createClient();
 
-  const user = await getUser();
+  const user = await requireUser();
   const userEmail = user?.email ?? "unknown";
 
   // Insert the follow-up record with who logged it
