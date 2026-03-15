@@ -96,7 +96,7 @@ export default function IntakeForm() {
       }
 
       store.reset();
-      router.push(`/clinician/success?id=${result.clinicianId}`);
+      router.push(`/clinician/success?id=${result.clinicianId}&pdf=${result.pdfFileName}`);
     } catch {
       setSubmitError("Network error. Please try again.");
       setIsSubmitting(false);

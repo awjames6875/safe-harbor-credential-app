@@ -22,17 +22,19 @@ export default async function ClinicianDetailPage({
 
   if (!clinician) return notFound();
 
-  const [workResult, refsResult, disclosuresResult, payerResult] = await Promise.all([
+  const [workResult, refsResult, disclosuresResult, payerResult, docsResult] = await Promise.all([
     supabase.from("work_history").select("*").eq("clinician_id", id).order("start_date", { ascending: false }),
     supabase.from("professional_references").select("*").eq("clinician_id", id),
     supabase.from("disclosures").select("*").eq("clinician_id", id).single(),
     supabase.from("payer_applications").select("*").eq("clinician_id", id),
+    supabase.from("documents").select("*").eq("owner_id", id).eq("owner_type", "clinician"),
   ]);
 
   const workHistory = workResult.data ?? [];
   const references = refsResult.data ?? [];
   const disclosures = disclosuresResult.data;
   const payerApps = payerResult.data ?? [];
+  const documents = docsResult.data ?? [];
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -271,6 +273,34 @@ export default async function ClinicianDetailPage({
                 <div key={app.id} className="flex items-center justify-between text-sm">
                   <span>{app.payer_name}</span>
                   <StatusBadge status={app.status} />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    
+      {documents.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Uploaded Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {documents.map((doc) => (
+                <div key={doc.id} className="flex items-center justify-between text-sm">
+                  <div>
+                    <p className="font-medium">{doc.document_type}</p>
+                    <p className="text-xs text-slate-400">{doc.file_name}</p>
+                  </div>
+                  <a
+                    href={doc.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline text-xs"
+                  >
+                    Download
+                  </a>
                 </div>
               ))}
             </div>
