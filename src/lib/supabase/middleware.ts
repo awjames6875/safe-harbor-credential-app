@@ -36,5 +36,16 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Protect /clinician routes — redirect to /clinician/login if not authenticated
+  const isClinicianRoute = request.nextUrl.pathname.startsWith("/clinician");
+  const isClinicianPublic =
+    request.nextUrl.pathname === "/clinician/login" ||
+    request.nextUrl.pathname.startsWith("/clinician/success");
+  if (!user && isClinicianRoute && !isClinicianPublic) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/clinician/login";
+    return NextResponse.redirect(url);
+  }
+
   return supabaseResponse;
 }
