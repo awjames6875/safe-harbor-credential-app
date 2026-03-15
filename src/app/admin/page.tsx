@@ -8,6 +8,7 @@ import FollowUpList from "@/components/admin/FollowUpList";
 import { calculateAlerts } from "@/lib/alerts";
 import { calculateNextActions } from "@/lib/nextActions";
 import PhaseProgress from "@/components/admin/PhaseProgress";
+import InviteUserButton from "@/components/admin/InviteUserButton";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -42,6 +43,7 @@ export default async function AdminDashboard() {
         <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
         <p className="text-slate-500 mt-1">Overview of your credentialing progress</p>
       </div>
+      <InviteUserButton />
 
       <AlertBanner alerts={alerts} />
 
