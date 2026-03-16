@@ -36,6 +36,16 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Protect /admin routes — redirect clinicians away from admin pages
+  if (user && request.nextUrl.pathname.startsWith("/admin")) {
+    const role = user.app_metadata?.role;
+    if (role && role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/clinician";
+      return NextResponse.redirect(url);
+    }
+  }
+
   // Protect /clinician routes — redirect to /clinician/login if not authenticated
   const isClinicianRoute = request.nextUrl.pathname.startsWith("/clinician");
   const isClinicianPublic =

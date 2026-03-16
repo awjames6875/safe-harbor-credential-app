@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 export default function InviteUserButton() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"clinician" | "admin">("clinician");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -19,15 +20,16 @@ export default function InviteUserButton() {
     const res = await fetch("/api/admin/invite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, role }),
     });
 
     const result = await res.json();
     setLoading(false);
 
     if (res.ok) {
-      setMessage({ type: "success", text: `Invite sent to ${email}` });
+      setMessage({ type: "success", text: `${role === "admin" ? "Admin" : "Clinician"} invite sent to ${email}` });
       setEmail("");
+      setRole("clinician");
       setTimeout(() => { setOpen(false); setMessage(null); }, 3000);
     } else {
       setMessage({ type: "error", text: result.error || "Failed to send invite." });
@@ -49,7 +51,7 @@ export default function InviteUserButton() {
   }
 
   return (
-    <form onSubmit={handleInvite} className="flex items-center gap-2">
+    <form onSubmit={handleInvite} className="flex items-center gap-2 flex-wrap">
       <Input
         type="email"
         placeholder="colleague@email.com"
@@ -59,12 +61,20 @@ export default function InviteUserButton() {
         required
         autoFocus
       />
+      <select
+        value={role}
+        onChange={(e) => setRole(e.target.value as "clinician" | "admin")}
+        className="h-9 rounded-md border border-slate-200 bg-white px-2 text-sm text-slate-700"
+      >
+        <option value="clinician">Clinician</option>
+        <option value="admin">Admin</option>
+      </select>
       <Button type="submit" size="sm" disabled={loading}>
         {loading ? "Sending..." : "Send Invite"}
       </Button>
       <button
         type="button"
-        onClick={() => { setOpen(false); setMessage(null); }}
+        onClick={() => { setOpen(false); setMessage(null); setRole("clinician"); }}
         className="text-sm text-slate-400 hover:text-slate-600"
       >
         Cancel
