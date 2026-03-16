@@ -38,7 +38,16 @@ export default function ResetPasswordPage() {
       setError(error.message);
     } else {
       setDone(true);
-      setTimeout(() => router.push("/login"), 2000);
+      // Redirect based on role
+      const { data: { user } } = await supabase.auth.getUser();
+      const role = user?.app_metadata?.role;
+      if (role === "admin") {
+        setTimeout(() => router.push("/admin"), 2000);
+      } else if (role === "clinician") {
+        setTimeout(() => router.push("/clinician"), 2000);
+      } else {
+        setTimeout(() => router.push("/login"), 2000);
+      }
     }
   }
 
@@ -57,7 +66,7 @@ export default function ResetPasswordPage() {
           <CardContent>
             {done ? (
               <div className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-700">
-                Password updated! Redirecting to sign in...
+                Password set! Redirecting you now...
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">

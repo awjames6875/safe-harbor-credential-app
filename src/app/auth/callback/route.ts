@@ -16,8 +16,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", origin));
   }
 
-  // Redirect based on role
+  const type = searchParams.get("type");
   const role = data.session?.user?.app_metadata?.role;
+
+  // Invite or signup flow — send new users to set their password first
+  if (type === "invite" || type === "signup") {
+    return NextResponse.redirect(new URL("/reset-password", origin));
+  }
+
+  // Password recovery flow
+  if (type === "recovery") {
+    return NextResponse.redirect(new URL("/reset-password", origin));
+  }
+
+  // Normal auth — redirect based on role
   if (role === "admin") {
     return NextResponse.redirect(new URL("/admin", origin));
   }
