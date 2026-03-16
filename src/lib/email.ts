@@ -5,9 +5,8 @@ const FROM_EMAIL = "ajames@safeharborbehavioralhealth.com";
 
 function initSendGrid(): boolean {
   const apiKey = process.env.SENDGRID_API_KEY;
-  const adminEmail = process.env.ADMIN_EMAIL;
-  if (!apiKey || !adminEmail) {
-    console.warn("Email not configured: SENDGRID_API_KEY or ADMIN_EMAIL missing");
+  if (!apiKey) {
+    console.warn("Email not configured: SENDGRID_API_KEY missing");
     return false;
   }
   sgMail.setApiKey(apiKey);
