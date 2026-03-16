@@ -25,6 +25,51 @@ export async function sendSubmissionNotification(clinicianName: string) {
   });
 }
 
+export async function sendWelcomeEmail(toEmail: string): Promise<void> {
+  if (!initSendGrid()) return;
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://safe-harbor-credential-app.vercel.app";
+
+  const body = [
+    "Welcome to Safe Harbor Behavioral Health - Credentialing Portal",
+    "================================================================",
+    "",
+    "You have been invited to access the Safe Harbor credentialing management system.",
+    "",
+    "GETTING STARTED",
+    "---------------",
+    "Step 1: Check your inbox for a separate email with a link to set your password.",
+    "        (It may be in your spam folder - subject: You have been invited)",
+    "",
+    "Step 2: Click that link and create your password.",
+    "",
+    "Step 3: Log in at one of these links:",
+    "        - Admin staff:  " + appUrl + "/login",
+    "        - Clinicians:   " + appUrl + "/clinician/login",
+    "",
+    "WHAT YOU CAN DO",
+    "---------------",
+    "- Clinicians: Complete your intake form so our team can begin the",
+    "  credentialing process with insurance payers on your behalf.",
+    "",
+    "- Admin staff: Track payer applications, manage clinician profiles,",
+    "  set follow-up reminders, and monitor credential expiry dates.",
+    "",
+    "QUESTIONS?",
+    "----------",
+    "Contact Ashley James at ajames@safeharborbehavioralhealth.com",
+    "",
+    "- Safe Harbor Behavioral Health Credentialing System",
+  ].join("\n");
+
+  await sgMail.send({
+    from: FROM_EMAIL,
+    to: toEmail,
+    subject: "Welcome to Safe Harbor Behavioral Health - Credentialing Portal",
+    text: body,
+  });
+}
+
 export async function sendDailyDigest(alerts: Alert[]): Promise<void> {
   if (!initSendGrid()) return;
 
