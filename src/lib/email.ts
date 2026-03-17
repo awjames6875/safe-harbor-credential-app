@@ -1,22 +1,22 @@
-import sgMail from "@sendgrid/mail";
+import { Resend } from "resend";
 import { Alert } from "@/lib/alerts";
 
-const FROM_EMAIL = "ajames@safeharborbehavioralhealth.com";
+const FROM_EMAIL = "Safe Harbor <ajames@safeharborbehavioralhealth.com>";
 
-function initSendGrid(): boolean {
-  const apiKey = process.env.SENDGRID_API_KEY;
+function getResend(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("Email not configured: SENDGRID_API_KEY missing");
-    return false;
+    console.warn("Email not configured: RESEND_API_KEY missing");
+    return null;
   }
-  sgMail.setApiKey(apiKey);
-  return true;
+  return new Resend(apiKey);
 }
 
 export async function sendSubmissionNotification(clinicianName: string) {
-  if (!initSendGrid()) return;
+  const resend = getResend();
+  if (!resend) return;
 
-  await sgMail.send({
+  await resend.emails.send({
     from: FROM_EMAIL,
     to: process.env.ADMIN_EMAIL!,
     subject: `New Clinician Intake: ${clinicianName}`,
@@ -25,7 +25,8 @@ export async function sendSubmissionNotification(clinicianName: string) {
 }
 
 export async function sendWelcomeEmail(toEmail: string): Promise<void> {
-  if (!initSendGrid()) return;
+  const resend = getResend();
+  if (!resend) return;
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://safe-harbor-credential-app.vercel.app";
 
@@ -61,7 +62,7 @@ export async function sendWelcomeEmail(toEmail: string): Promise<void> {
     "- Safe Harbor Behavioral Health Credentialing System",
   ].join("\n");
 
-  await sgMail.send({
+  await resend.emails.send({
     from: FROM_EMAIL,
     to: toEmail,
     subject: "Welcome to Safe Harbor Behavioral Health - Credentialing Portal",
@@ -74,7 +75,8 @@ export async function sendInviteEmail(
   inviteLink: string,
   role: "admin" | "clinician"
 ): Promise<void> {
-  if (!initSendGrid()) return;
+  const resend = getResend();
+  if (!resend) return;
 
   const portalName = role === "admin" ? "Admin Dashboard" : "Clinician Portal";
 
@@ -101,7 +103,7 @@ export async function sendInviteEmail(
     "— Safe Harbor Behavioral Health",
   ].join("\n");
 
-  await sgMail.send({
+  await resend.emails.send({
     from: FROM_EMAIL,
     to: toEmail,
     subject: `You're invited to Safe Harbor Behavioral Health - ${portalName}`,
@@ -110,7 +112,8 @@ export async function sendInviteEmail(
 }
 
 export async function sendDailyDigest(alerts: Alert[]): Promise<void> {
-  if (!initSendGrid()) return;
+  const resend = getResend();
+  if (!resend) return;
 
   const criticalAlerts = alerts.filter((a) => a.type === "critical");
   const warningAlerts = alerts.filter((a) => a.type === "warning");
@@ -137,7 +140,7 @@ export async function sendDailyDigest(alerts: Alert[]): Promise<void> {
 
   body += `— Safe Harbor Credentialing System`;
 
-  await sgMail.send({
+  await resend.emails.send({
     from: FROM_EMAIL,
     to: process.env.ADMIN_EMAIL!,
     subject: `Safe Harbor: ${criticalCount} Critical Alert(s) - Daily Digest`,
