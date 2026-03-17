@@ -69,6 +69,46 @@ export async function sendWelcomeEmail(toEmail: string): Promise<void> {
   });
 }
 
+export async function sendInviteEmail(
+  toEmail: string,
+  inviteLink: string,
+  role: "admin" | "clinician"
+): Promise<void> {
+  if (!initSendGrid()) return;
+
+  const portalName = role === "admin" ? "Admin Dashboard" : "Clinician Portal";
+
+  const body = [
+    "You've Been Invited to Safe Harbor Credentialing",
+    "=================================================",
+    "",
+    `You have been invited to the ${portalName}.`,
+    "",
+    "STEP 1: Set Your Password",
+    "-------------------------",
+    "Click the link below to create your password:",
+    "",
+    inviteLink,
+    "",
+    "STEP 2: Log In",
+    "--------------",
+    `Once your password is set, you'll be redirected to the ${portalName}.`,
+    "",
+    "QUESTIONS?",
+    "----------",
+    "Contact Ashley James at ajames@safeharborbehavioralhealth.com",
+    "",
+    "— Safe Harbor Behavioral Health",
+  ].join("\n");
+
+  await sgMail.send({
+    from: FROM_EMAIL,
+    to: toEmail,
+    subject: `You're invited to Safe Harbor Behavioral Health - ${portalName}`,
+    text: body,
+  });
+}
+
 export async function sendDailyDigest(alerts: Alert[]): Promise<void> {
   if (!initSendGrid()) return;
 

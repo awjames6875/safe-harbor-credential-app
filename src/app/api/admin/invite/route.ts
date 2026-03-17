@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendWelcomeEmail } from "@/lib/email";
+import { sendInviteEmail } from "@/lib/email";
 import { requireUser } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
@@ -17,20 +17,30 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = createAdminClient();
-  const { data, error } = await supabase.auth.admin.inviteUserByEmail(email);
+
+  // Generate invite link WITHOUT Supabase sending email (bypasses rate limits)
+  const { data, error } = await supabase.auth.admin.generateLink({
+    type: "invite",
+    email,
+  });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Set role in app_metadata (secure — users cannot change this themselves)
+  // Set role in app_metadata
   if (data?.user?.id) {
     await supabase.auth.admin.updateUserById(data.user.id, {
       app_metadata: { role },
     });
   }
 
-  sendWelcomeEmail(email).catch(() => {});
+  // Use the action_link from Supabase — it goes through Supabase's verify
+  // endpoint which then redirects to our /auth/callback with the proper code
+  const inviteLink = data.properties?.action_link;
+
+  // Send invite email via SendGrid (no Supabase email needed)
+  await sendInviteEmail(email, inviteLink, role);
 
   return NextResponse.json({ success: true });
 }
