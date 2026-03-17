@@ -3,18 +3,16 @@ import { Alert } from "@/lib/alerts";
 
 const FROM_EMAIL = "Safe Harbor <ajames@safeharborbehavioralhealth.com>";
 
-function getResend(): Resend | null {
+function getResend(): Resend {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("Email not configured: RESEND_API_KEY missing");
-    return null;
+    throw new Error("RESEND_API_KEY is not configured");
   }
   return new Resend(apiKey);
 }
 
 export async function sendSubmissionNotification(clinicianName: string) {
   const resend = getResend();
-  if (!resend) return;
 
   await resend.emails.send({
     from: FROM_EMAIL,
@@ -26,7 +24,6 @@ export async function sendSubmissionNotification(clinicianName: string) {
 
 export async function sendWelcomeEmail(toEmail: string): Promise<void> {
   const resend = getResend();
-  if (!resend) return;
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://safe-harbor-credential-app.vercel.app";
 
@@ -76,7 +73,6 @@ export async function sendInviteEmail(
   role: "admin" | "clinician"
 ): Promise<void> {
   const resend = getResend();
-  if (!resend) return;
 
   const portalName = role === "admin" ? "Admin Dashboard" : "Clinician Portal";
 
@@ -113,7 +109,6 @@ export async function sendInviteEmail(
 
 export async function sendDailyDigest(alerts: Alert[]): Promise<void> {
   const resend = getResend();
-  if (!resend) return;
 
   const criticalAlerts = alerts.filter((a) => a.type === "critical");
   const warningAlerts = alerts.filter((a) => a.type === "warning");

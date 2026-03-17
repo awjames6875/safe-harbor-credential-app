@@ -39,8 +39,14 @@ export async function POST(request: NextRequest) {
   // endpoint which then redirects to our /auth/callback with the proper code
   const inviteLink = data.properties?.action_link;
 
-  // Send invite email via SendGrid (no Supabase email needed)
-  await sendInviteEmail(email, inviteLink, role);
+  // Send invite email via Resend
+  try {
+    await sendInviteEmail(email, inviteLink, role);
+  } catch (emailError: unknown) {
+    const message = emailError instanceof Error ? emailError.message : "Unknown email error";
+    console.error("Failed to send invite email:", message);
+    return NextResponse.json({ error: `User created but email failed: ${message}` }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }
