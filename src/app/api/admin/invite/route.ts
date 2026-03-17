@@ -18,10 +18,15 @@ export async function POST(request: NextRequest) {
 
   const supabase = createAdminClient();
 
-  // Generate invite link WITHOUT Supabase sending email (bypasses rate limits)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://safe-harbor-credential-app.vercel.app";
+
+  // Generate invite link — redirects to /auth/callback after Supabase verifies token
   const { data, error } = await supabase.auth.admin.generateLink({
     type: "invite",
     email,
+    options: {
+      redirectTo: `${appUrl}/auth/callback`,
+    },
   });
 
   if (error) {
