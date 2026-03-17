@@ -111,22 +111,24 @@ export default function LoginPage() {
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="login-email">Email</Label>
                   <Input
-                    id="email"
+                    id="login-email"
+                    name="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="adam@safeharbor.com"
+                    autoComplete="off"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="login-password">Password</Label>
                     <button
                       type="button"
                       onClick={() => { setResetMode(true); setError(""); }}
@@ -136,10 +138,12 @@ export default function LoginPage() {
                     </button>
                   </div>
                   <Input
-                    id="password"
+                    id="login-password"
+                    name="login-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="off"
                     required
                   />
                 </div>
