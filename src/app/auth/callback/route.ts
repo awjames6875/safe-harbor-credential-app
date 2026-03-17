@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", origin));
   }
 
-  // This callback is only triggered by invite links and password resets
-  // (normal login uses signInWithPassword and never hits this route)
-  return NextResponse.redirect(new URL("/login?setup=true", origin));
+  // Get email server-side so the create-password page doesn't need
+  // to rely on client-side session detection
+  const { data: { user } } = await supabase.auth.getUser();
+  const email = user?.email ? `?email=${encodeURIComponent(user.email)}` : "";
+
+  return NextResponse.redirect(new URL(`/create-password${email}`, origin));
 }
