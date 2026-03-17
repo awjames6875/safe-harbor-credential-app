@@ -18,5 +18,5 @@ export async function GET(request: NextRequest) {
 
   // This callback is only triggered by invite links and password resets
   // (normal login uses signInWithPassword and never hits this route)
-  return NextResponse.redirect(new URL("/reset-password", origin));
+  return NextResponse.redirect(new URL("/login?setup=true", origin));
 }

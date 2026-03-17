@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -19,9 +19,13 @@ export default function LoginPage() {
   const [createPasswordMode, setCreatePasswordMode] = useState(false);
   const [passwordCreated, setPasswordCreated] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Check if user already has a session (from invite link)
+  // Only show "Create Password" when arriving from invite link (?setup=true)
   useEffect(() => {
+    const isSetup = searchParams.get("setup") === "true";
+    if (!isSetup) return;
+
     async function checkSession() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
@@ -31,7 +35,7 @@ export default function LoginPage() {
       }
     }
     checkSession();
-  }, []);
+  }, [searchParams]);
 
   async function handleCreatePassword(e: React.FormEvent) {
     e.preventDefault();
@@ -257,5 +261,13 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
