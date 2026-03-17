@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     type: "invite",
     email,
     options: {
-      redirectTo: `${appUrl}/auth/callback`,
+      redirectTo: `${appUrl}/auth/callback?type=invite`,
     },
   });
 

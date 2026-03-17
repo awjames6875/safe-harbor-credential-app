@@ -111,7 +111,7 @@ export default function LoginPage() {
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
+              <form onSubmit={handleLogin} className="space-y-4" autoComplete="new-password">
                 <div className="space-y-2">
                   <Label htmlFor="login-email">Email</Label>
                   <Input
@@ -121,7 +121,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="adam@safeharbor.com"
-                    autoComplete="off"
+                    autoComplete="new-password"
                     required
                   />
                 </div>
@@ -143,7 +143,7 @@ export default function LoginPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="off"
+                    autoComplete="new-password"
                     required
                   />
                 </div>
