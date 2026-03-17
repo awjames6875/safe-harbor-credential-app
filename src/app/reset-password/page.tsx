@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,24 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ResetPasswordPage() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    async function loadEmail() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email) {
+        setEmail(user.email);
+      }
+    }
+    loadEmail();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,16 +50,7 @@ export default function ResetPasswordPage() {
       setError(error.message);
     } else {
       setDone(true);
-      // Redirect based on role
-      const { data: { user } } = await supabase.auth.getUser();
-      const role = user?.app_metadata?.role;
-      if (role === "admin") {
-        setTimeout(() => router.push("/admin"), 2000);
-      } else if (role === "clinician") {
-        setTimeout(() => router.push("/clinician"), 2000);
-      } else {
-        setTimeout(() => router.push("/login"), 2000);
-      }
+      setTimeout(() => router.push("/login"), 2000);
     }
   }
 
@@ -61,22 +64,34 @@ export default function ResetPasswordPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Set New Password</CardTitle>
+            <CardTitle className="text-lg">Create Your Password</CardTitle>
           </CardHeader>
           <CardContent>
             {done ? (
               <div className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-700">
-                Password set! Redirecting you now...
+                Password created! Redirecting to login...
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="password">New Password</Label>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    disabled
+                    className="bg-slate-100"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Create Password</Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="new-password"
                     required
                   />
                 </div>
@@ -88,6 +103,7 @@ export default function ResetPasswordPage() {
                     type="password"
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
+                    autoComplete="new-password"
                     required
                   />
                 </div>
