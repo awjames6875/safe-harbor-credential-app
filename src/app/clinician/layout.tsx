@@ -14,6 +14,12 @@ export default function ClinicianLayout({
             Safe Harbor Behavioral Health
           </h1>
           <p className="text-slate-500 mt-1">Clinician Intake Form</p>
+          <a
+            href="/clinician/settings"
+            className="text-xs text-slate-400 hover:text-teal-600 underline mt-1 inline-block"
+          >
+            Change Password
+          </a>
         </div>
         {children}
       </div>

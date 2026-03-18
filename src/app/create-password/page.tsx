@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 function CreatePasswordForm() {
   const searchParams = useSearchParams();
   const emailFromUrl = searchParams.get("email") || "";
+  const roleFromUrl = searchParams.get("role") || "";
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -42,7 +43,8 @@ function CreatePasswordForm() {
     } else {
       await supabase.auth.signOut();
       setDone(true);
-      setTimeout(() => router.push("/login"), 2000);
+      const loginUrl = roleFromUrl === "clinician" ? "/clinician/login" : "/login";
+      setTimeout(() => router.push(loginUrl), 2000);
     }
   }
 

@@ -16,10 +16,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", origin));
   }
 
-  // Get email server-side so the create-password page doesn't need
-  // to rely on client-side session detection
+  // Get email and role server-side for the create-password page
   const { data: { user } } = await supabase.auth.getUser();
-  const email = user?.email ? `?email=${encodeURIComponent(user.email)}` : "";
+  const params = new URLSearchParams();
+  if (user?.email) params.set("email", user.email);
+  if (user?.app_metadata?.role) params.set("role", user.app_metadata.role);
+  const qs = params.toString() ? `?${params.toString()}` : "";
 
-  return NextResponse.redirect(new URL(`/create-password${email}`, origin));
+  return NextResponse.redirect(new URL(`/create-password${qs}`, origin));
 }
