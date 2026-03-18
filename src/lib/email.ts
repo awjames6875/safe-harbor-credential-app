@@ -69,7 +69,8 @@ export async function sendWelcomeEmail(toEmail: string): Promise<void> {
 
 export async function sendInviteEmail(
   toEmail: string,
-  inviteLink: string,
+  tempPassword: string,
+  loginUrl: string,
   role: "admin" | "clinician"
 ): Promise<void> {
   const resend = getResend();
@@ -82,15 +83,16 @@ export async function sendInviteEmail(
     "",
     `You have been invited to the ${portalName}.`,
     "",
-    "STEP 1: Set Your Password",
-    "-------------------------",
-    "Click the link below to create your password:",
+    "YOUR LOGIN CREDENTIALS",
+    "----------------------",
+    `Email: ${toEmail}`,
+    `Temporary Password: ${tempPassword}`,
     "",
-    inviteLink,
+    "LOG IN HERE",
+    "-----------",
+    loginUrl,
     "",
-    "STEP 2: Log In",
-    "--------------",
-    `Once your password is set, you'll be redirected to the ${portalName}.`,
+    "Please change your password after your first login.",
     "",
     "QUESTIONS?",
     "----------",

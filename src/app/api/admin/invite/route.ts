@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendInviteEmail } from "@/lib/email";
 import { requireUser } from "@/lib/auth";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   await requireUser();
@@ -18,35 +19,29 @@ export async function POST(request: NextRequest) {
 
   const supabase = createAdminClient();
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://safe-harbor-credential-app.vercel.app";
+  // Generate a temporary password — user logs in with this, can change later
+  const tempPassword = crypto.randomBytes(6).toString("base64url");
 
-  // Generate invite link — redirects to /auth/callback after Supabase verifies token
-  const { data, error } = await supabase.auth.admin.generateLink({
-    type: "invite",
+  // Create user with the temporary password (no redirect chain needed)
+  const { error } = await supabase.auth.admin.createUser({
     email,
-    options: {
-      redirectTo: `${appUrl}/auth/callback?type=invite`,
-    },
+    password: tempPassword,
+    email_confirm: true,
+    app_metadata: { role },
   });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Set role in app_metadata
-  if (data?.user?.id) {
-    await supabase.auth.admin.updateUserById(data.user.id, {
-      app_metadata: { role },
-    });
-  }
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://safe-harbor-credential-app.vercel.app";
+  const loginUrl = role === "clinician"
+    ? `${appUrl}/clinician/login`
+    : `${appUrl}/login`;
 
-  // Use the action_link from Supabase — it goes through Supabase's verify
-  // endpoint which then redirects to our /auth/callback with the proper code
-  const inviteLink = data.properties?.action_link;
-
-  // Send invite email via Resend
+  // Send invite email with temporary password and login link
   try {
-    await sendInviteEmail(email, inviteLink, role);
+    await sendInviteEmail(email, tempPassword, loginUrl, role);
   } catch (emailError: unknown) {
     const message = emailError instanceof Error ? emailError.message : "Unknown email error";
     console.error("Failed to send invite email:", message);
