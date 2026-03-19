@@ -252,7 +252,7 @@ export async function POST(request: NextRequest) {
     // Upload PDF to Supabase Storage (non-blocking — don't fail submission if storage unavailable)
     const pdfFileName = `caqh-cheatsheet-${clinicianId}.pdf`;
     const { error: uploadError } = await supabase.storage
-      .from("Documents")
+      .from("documents")
       .upload(pdfFileName, pdfBuffer, {
         contentType: "application/pdf",
         upsert: true,
