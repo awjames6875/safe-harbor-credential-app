@@ -84,7 +84,7 @@ export default function CaqhUpload() {
 
   if (state === "success") {
     return (
-      <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mt-4">
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
         <div className="flex items-center gap-3">
           <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
           <div>
@@ -102,8 +102,8 @@ export default function CaqhUpload() {
 
   if (state === "error") {
     return (
-      <div className="mt-4">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6">
           <div className="flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
             <div>
@@ -123,7 +123,7 @@ export default function CaqhUpload() {
 
   if (state === "parsing") {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-4 text-center">
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
         <Loader2 className="w-6 h-6 text-blue-500 mx-auto mb-2 animate-spin" />
         <p className="font-medium text-blue-800 text-sm">Analyzing your CAQH profile...</p>
         <p className="text-xs text-blue-600 mt-1">This may take a few seconds</p>
@@ -132,16 +132,13 @@ export default function CaqhUpload() {
   }
 
   return (
-    <div className="mt-4">
-      <p className="text-sm text-slate-500 mb-2">
-        Have your CAQH ProView PDF? Upload it to auto-fill the rest of the form.
-      </p>
+    <div>
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
           state === "dragging"
             ? "border-blue-500 bg-blue-50"
             : "border-slate-200 hover:border-slate-300"

@@ -80,7 +80,7 @@ export default function ResumeUpload() {
 
   if (state === "success") {
     return (
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 mb-6">
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
         <div className="flex items-center gap-3">
           <CheckCircle className="w-6 h-6 text-emerald-500 shrink-0" />
           <div>
@@ -98,7 +98,7 @@ export default function ResumeUpload() {
 
   if (state === "error") {
     return (
-      <div className="mb-6">
+      <div>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
           <div className="flex items-center gap-3">
             <AlertCircle className="w-6 h-6 text-red-500 shrink-0" />
@@ -119,7 +119,7 @@ export default function ResumeUpload() {
 
   if (state === "parsing") {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 mb-6 text-center">
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
         <Loader2 className="w-8 h-8 text-blue-500 mx-auto mb-3 animate-spin" />
         <p className="font-medium text-blue-800">Analyzing your resume...</p>
         <p className="text-sm text-blue-600 mt-1">
@@ -130,7 +130,7 @@ export default function ResumeUpload() {
   }
 
   return (
-    <div className="mb-6">
+    <div>
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -161,9 +161,6 @@ export default function ResumeUpload() {
         onChange={(e) => handleFileInput(e.target.files)}
         className="hidden"
       />
-      <p className="text-xs text-slate-400 text-center mt-2">
-        Or skip this and fill in the form manually below
-      </p>
     </div>
   );
 }

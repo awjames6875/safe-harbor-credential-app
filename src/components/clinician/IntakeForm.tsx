@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useIntakeStore } from "@/stores/intakeStore";
 import ResumeUpload from "./ResumeUpload";
+import CaqhUpload from "./CaqhUpload";
 import SectionProgress from "./SectionProgress";
 import BasicInfoSection from "./sections/BasicInfoSection";
 import NpiSection from "./sections/NpiSection";
@@ -122,7 +123,12 @@ export default function IntakeForm() {
 
   return (
     <div>
-      {currentSection === 0 && <ResumeUpload />}
+      {currentSection === 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <ResumeUpload />
+          <CaqhUpload />
+        </div>
+      )}
       <SectionProgress
         currentSection={currentSection}
         completedSections={completedSections}
