@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useIntakeStore } from "@/stores/intakeStore";
 import { detectWorkGaps, type WorkHistoryEntry } from "@/lib/validations/clinician";
 import { Input } from "@/components/ui/input";
@@ -22,12 +22,18 @@ const EMPTY_ENTRY: WorkHistoryEntry = {
 };
 
 export default function WorkHistorySection() {
-  const { workHistory, setWorkHistory, markSectionComplete, goNext, goBack } =
+  const { workHistory, setWorkHistory, markSectionComplete, goNext, goBack, isResumeParsed } =
     useIntakeStore();
 
   const [entries, setEntries] = useState<WorkHistoryEntry[]>(
     workHistory.length > 0 ? workHistory : [{ ...EMPTY_ENTRY }]
   );
+
+  useEffect(() => {
+    if (isResumeParsed && workHistory.length > 0) {
+      setEntries(workHistory);
+    }
+  }, [isResumeParsed, workHistory]);
   const [error, setError] = useState<string | null>(null);
 
   const gaps = detectWorkGaps(entries.filter((e) => e.employerName));

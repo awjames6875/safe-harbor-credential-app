@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { educationSchema, type EducationData } from "@/lib/validations/clinician";
@@ -9,12 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export default function EducationSection() {
-  const { education, updateEducation, markSectionComplete, goNext, goBack } =
+  const { education, updateEducation, markSectionComplete, goNext, goBack, isResumeParsed } =
     useIntakeStore();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<EducationData>({
     resolver: zodResolver(educationSchema),
@@ -25,6 +27,17 @@ export default function EducationSection() {
       gradDate: education.gradDate || "",
     },
   });
+
+  useEffect(() => {
+    if (isResumeParsed) {
+      reset({
+        schoolName: education.schoolName || "",
+        degree: education.degree || "",
+        major: education.major || "",
+        gradDate: education.gradDate || "",
+      });
+    }
+  }, [isResumeParsed, education, reset]);
 
   function onSubmit(data: EducationData) {
     updateEducation(data);

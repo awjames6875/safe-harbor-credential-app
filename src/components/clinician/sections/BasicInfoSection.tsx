@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { basicInfoSchema, type BasicInfoData } from "@/lib/validations/clinician";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import MaskedInput from "@/components/shared/MaskedInput";
 
 export default function BasicInfoSection() {
-  const { basicInfo, updateBasicInfo, markSectionComplete, goNext } =
+  const { basicInfo, updateBasicInfo, markSectionComplete, goNext, isResumeParsed } =
     useIntakeStore();
 
   const {
@@ -18,6 +19,7 @@ export default function BasicInfoSection() {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<BasicInfoData>({
     resolver: zodResolver(basicInfoSchema),
@@ -31,6 +33,20 @@ export default function BasicInfoSection() {
       email: basicInfo.email || "",
     },
   });
+
+  useEffect(() => {
+    if (isResumeParsed) {
+      reset({
+        firstName: basicInfo.firstName || "",
+        lastName: basicInfo.lastName || "",
+        dob: basicInfo.dob || "",
+        ssn: basicInfo.ssn || "",
+        homeAddress: basicInfo.homeAddress || "",
+        phone: basicInfo.phone || "",
+        email: basicInfo.email || "",
+      });
+    }
+  }, [isResumeParsed, basicInfo, reset]);
 
   const ssnValue = watch("ssn");
 

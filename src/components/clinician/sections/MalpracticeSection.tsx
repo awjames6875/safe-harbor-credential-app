@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { malpracticeSchema, type MalpracticeData } from "@/lib/validations/clinician";
@@ -9,12 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export default function MalpracticeSection() {
-  const { malpractice, updateMalpractice, markSectionComplete, goNext, goBack } =
+  const { malpractice, updateMalpractice, markSectionComplete, goNext, goBack, isResumeParsed } =
     useIntakeStore();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<MalpracticeData>({
     resolver: zodResolver(malpracticeSchema),
@@ -27,6 +29,19 @@ export default function MalpracticeSection() {
       malpracticeEnd: malpractice.malpracticeEnd || "",
     },
   });
+
+  useEffect(() => {
+    if (isResumeParsed) {
+      reset({
+        malpracticeCarrier: malpractice.malpracticeCarrier || "",
+        malpracticePolicy: malpractice.malpracticePolicy || "",
+        malpracticePerClaim: malpractice.malpracticePerClaim || "",
+        malpracticeAggregate: malpractice.malpracticeAggregate || "",
+        malpracticeStart: malpractice.malpracticeStart || "",
+        malpracticeEnd: malpractice.malpracticeEnd || "",
+      });
+    }
+  }, [isResumeParsed, malpractice, reset]);
 
   function onSubmit(data: MalpracticeData) {
     updateMalpractice(data);

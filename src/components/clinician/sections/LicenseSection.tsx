@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { licenseSchema, type LicenseData } from "@/lib/validations/clinician";
@@ -18,13 +19,14 @@ import {
 const LICENSE_TYPES = ["LPC", "LCSW", "LMFT", "LBP", "LADC", "PhD", "PsyD"];
 
 export default function LicenseSection() {
-  const { license, updateLicense, markSectionComplete, goNext, goBack } =
+  const { license, updateLicense, markSectionComplete, goNext, goBack, isResumeParsed } =
     useIntakeStore();
 
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<LicenseData>({
     resolver: zodResolver(licenseSchema),
@@ -36,6 +38,18 @@ export default function LicenseSection() {
       licenseExpiry: license.licenseExpiry || "",
     },
   });
+
+  useEffect(() => {
+    if (isResumeParsed) {
+      reset({
+        licenseType: license.licenseType || "",
+        licenseNumber: license.licenseNumber || "",
+        licenseState: license.licenseState || "OK",
+        licenseIssued: license.licenseIssued || "",
+        licenseExpiry: license.licenseExpiry || "",
+      });
+    }
+  }, [isResumeParsed, license, reset]);
 
   function onSubmit(data: LicenseData) {
     updateLicense(data);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { disclosuresSchema, type DisclosuresData } from "@/lib/validations/clinician";
@@ -52,7 +53,7 @@ interface DisclosuresSectionProps {
 }
 
 export default function DisclosuresSection({ onFinalSubmit }: DisclosuresSectionProps) {
-  const { disclosures, updateDisclosures, markSectionComplete, goBack } =
+  const { disclosures, updateDisclosures, markSectionComplete, goBack, isResumeParsed } =
     useIntakeStore();
 
   const {
@@ -60,6 +61,7 @@ export default function DisclosuresSection({ onFinalSubmit }: DisclosuresSection
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<DisclosuresData>({
     resolver: zodResolver(disclosuresSchema),
@@ -72,6 +74,19 @@ export default function DisclosuresSection({ onFinalSubmit }: DisclosuresSection
       signedName: disclosures.signedName || "",
     },
   });
+
+  useEffect(() => {
+    if (isResumeParsed) {
+      reset({
+        malpracticeClaim: disclosures.malpracticeClaim || false,
+        licenseAction: disclosures.licenseAction || false,
+        federalExclusion: disclosures.federalExclusion || false,
+        felony: disclosures.felony || false,
+        explanation: disclosures.explanation || "",
+        signedName: disclosures.signedName || "",
+      });
+    }
+  }, [isResumeParsed, disclosures, reset]);
 
   const values = watch();
   const hasYes =

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { npiSchema, TAXONOMY_CODES, type NpiData } from "@/lib/validations/clinician";
@@ -9,12 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export default function NpiSection() {
-  const { npi, updateNpi, markSectionComplete, goNext, goBack } =
+  const { npi, updateNpi, markSectionComplete, goNext, goBack, isResumeParsed } =
     useIntakeStore();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<NpiData>({
     resolver: zodResolver(npiSchema),
@@ -23,6 +25,15 @@ export default function NpiSection() {
       taxonomyCode: npi.taxonomyCode || "",
     },
   });
+
+  useEffect(() => {
+    if (isResumeParsed) {
+      reset({
+        npiType1: npi.npiType1 || "",
+        taxonomyCode: npi.taxonomyCode || "",
+      });
+    }
+  }, [isResumeParsed, npi, reset]);
 
   function onSubmit(data: NpiData) {
     updateNpi(data);

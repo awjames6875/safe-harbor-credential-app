@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useIntakeStore } from "@/stores/intakeStore";
 import type { ReferenceEntry } from "@/lib/validations/clinician";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ const EMPTY_REF: ReferenceEntry = {
 };
 
 export default function ReferencesSection() {
-  const { references, setReferences, markSectionComplete, goNext, goBack } =
+  const { references, setReferences, markSectionComplete, goNext, goBack, isResumeParsed } =
     useIntakeStore();
 
   const [entries, setEntries] = useState<ReferenceEntry[]>(
@@ -25,6 +25,12 @@ export default function ReferencesSection() {
       ? references
       : [{ ...EMPTY_REF }, { ...EMPTY_REF }, { ...EMPTY_REF }]
   );
+
+  useEffect(() => {
+    if (isResumeParsed && references.length >= 3) {
+      setEntries(references);
+    }
+  }, [isResumeParsed, references]);
   const [error, setError] = useState<string | null>(null);
 
   function updateEntry(index: number, field: keyof ReferenceEntry, value: string) {
