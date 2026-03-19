@@ -7,7 +7,7 @@ export default async function DocumentsPage() {
   const { data: documents } = await supabase
     .from("documents")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("uploaded_at", { ascending: false });
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">

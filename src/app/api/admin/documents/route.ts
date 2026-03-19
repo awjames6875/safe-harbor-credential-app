@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from("documents")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("uploaded_at", { ascending: false });
 
     if (ownerType) {
       query = query.eq("owner_type", ownerType);

@@ -16,7 +16,7 @@ interface Document {
   expiry_date: string | null;
   notes: string | null;
   uploaded_by: string | null;
-  created_at: string;
+  uploaded_at: string;
 }
 
 export default function DocumentTable({ documents }: { documents: Document[] }) {
@@ -229,7 +229,7 @@ export default function DocumentTable({ documents }: { documents: Document[] }) 
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-3 text-slate-500">{formatDate(doc.created_at)}</td>
+                  <td className="py-3 px-3 text-slate-500">{formatDate(doc.uploaded_at)}</td>
                   <td className="py-3 px-3">
                     <div className="flex items-center gap-2">
                       <a
