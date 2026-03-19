@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export default function MalpracticeSection() {
-  const { malpractice, updateMalpractice, markSectionComplete, goNext, goBack, isResumeParsed } =
+  const { malpractice, updateMalpractice, markSectionComplete, goNext, goBack, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const {
@@ -31,17 +31,15 @@ export default function MalpracticeSection() {
   });
 
   useEffect(() => {
-    if (isResumeParsed) {
-      reset({
-        malpracticeCarrier: malpractice.malpracticeCarrier || "",
-        malpracticePolicy: malpractice.malpracticePolicy || "",
-        malpracticePerClaim: malpractice.malpracticePerClaim || "",
-        malpracticeAggregate: malpractice.malpracticeAggregate || "",
-        malpracticeStart: malpractice.malpracticeStart || "",
-        malpracticeEnd: malpractice.malpracticeEnd || "",
-      });
-    }
-  }, [isResumeParsed, malpractice, reset]);
+    reset({
+      malpracticeCarrier: malpractice.malpracticeCarrier || "",
+      malpracticePolicy: malpractice.malpracticePolicy || "",
+      malpracticePerClaim: malpractice.malpracticePerClaim || "",
+      malpracticeAggregate: malpractice.malpracticeAggregate || "",
+      malpracticeStart: malpractice.malpracticeStart || "",
+      malpracticeEnd: malpractice.malpracticeEnd || "",
+    });
+  }, [isResumeParsed, resetVersion, malpractice, reset]);
 
   function onSubmit(data: MalpracticeData) {
     updateMalpractice(data);
