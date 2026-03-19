@@ -161,13 +161,20 @@ export default function StepCard({ step, onComplete }: { step: Step; onComplete:
             </div>
           )}
 
-          {/* Mark complete button */}
-          {!step.is_completed && (
+          {/* Mark complete / undo button */}
+          {!step.is_completed ? (
             <button
               onClick={() => onComplete(step.id)}
               className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-cyan-500 text-white font-bold rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all text-sm"
             >
               Mark Step {step.step_number} as Done
+            </button>
+          ) : (
+            <button
+              onClick={() => onComplete(step.id)}
+              className="w-full py-3 border-2 border-slate-200 text-slate-500 font-semibold rounded-xl hover:border-slate-300 hover:text-slate-700 transition-all text-sm"
+            >
+              Mark as Incomplete
             </button>
           )}
         </div>

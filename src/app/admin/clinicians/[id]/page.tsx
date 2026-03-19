@@ -5,6 +5,7 @@ import StatusBadge from "@/components/shared/StatusBadge";
 import ExpiryCountdown from "@/components/shared/ExpiryCountdown";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import DeleteClinicianButton from "@/components/admin/DeleteClinicianButton";
 
 export default async function ClinicianDetailPage({
   params,
@@ -57,16 +58,22 @@ export default async function ClinicianDetailPage({
             )}
           </div>
         </div>
-        {clinician.id && (
-          <a
-            href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/documents/caqh-cheatsheet-${clinician.id}.pdf`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
-          >
-            Download CAQH PDF
-          </a>
-        )}
+        <div className="flex items-center gap-2">
+          {clinician.id && (
+            <a
+              href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/documents/caqh-cheatsheet-${clinician.id}.pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+            >
+              Download CAQH PDF
+            </a>
+          )}
+          <DeleteClinicianButton
+            clinicianId={clinician.id}
+            clinicianName={`${clinician.first_name} ${clinician.last_name}`}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
