@@ -290,18 +290,54 @@ ALTER TABLE alerts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE credentialing_steps ENABLE ROW LEVEL SECURITY;
 ALTER TABLE resume_parses ENABLE ROW LEVEL SECURITY;
 
--- Admin (authenticated) can read/write everything
-CREATE POLICY admin_all_clinic ON clinic FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_clinicians ON clinicians FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_work_history ON work_history FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_disclosures ON disclosures FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_references ON professional_references FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_documents ON documents FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_payer_apps ON payer_applications FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_follow_ups ON follow_ups FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_alerts ON alerts FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_steps ON credentialing_steps FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY admin_all_resume ON resume_parses FOR ALL TO authenticated USING (true) WITH CHECK (true);
+-- Admin (role = 'admin') can read/write everything
+CREATE POLICY admin_all_clinic ON clinic FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_clinicians ON clinicians FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_work_history ON work_history FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_disclosures ON disclosures FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_references ON professional_references FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_documents ON documents FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_payer_apps ON payer_applications FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_follow_ups ON follow_ups FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_alerts ON alerts FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_steps ON credentialing_steps FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+CREATE POLICY admin_all_resume ON resume_parses FOR ALL TO authenticated
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+-- Clinician (role = 'clinician') can INSERT into submission tables only
+CREATE POLICY clinician_insert_clinicians ON clinicians FOR INSERT TO authenticated
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'clinician');
+CREATE POLICY clinician_insert_work_history ON work_history FOR INSERT TO authenticated
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'clinician');
+CREATE POLICY clinician_insert_disclosures ON disclosures FOR INSERT TO authenticated
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'clinician');
+CREATE POLICY clinician_insert_references ON professional_references FOR INSERT TO authenticated
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'clinician');
+CREATE POLICY clinician_insert_documents ON documents FOR INSERT TO authenticated
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'clinician');
+CREATE POLICY clinician_insert_resume ON resume_parses FOR INSERT TO authenticated
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'clinician');
 
 -- Anon (clinician portal) can INSERT into submission-related tables
 CREATE POLICY anon_insert_clinicians ON clinicians FOR INSERT TO anon WITH CHECK (true);

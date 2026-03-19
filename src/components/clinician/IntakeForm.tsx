@@ -52,7 +52,8 @@ export default function IntakeForm() {
       });
 
       if (!res.ok) {
-        throw new Error(`Failed to upload ${docType} document`);
+        console.error(`Failed to upload ${docType} document — storage may not be configured`);
+        continue;
       }
 
       const result = await res.json();
@@ -69,21 +70,25 @@ export default function IntakeForm() {
       // Upload document files first
       const documentUrls = await uploadDocumentFiles();
 
+      // Read latest state directly — the hook reference may be stale
+      // since DisclosuresSection updates the store then calls this synchronously
+      const latest = useIntakeStore.getState();
+
       const response = await fetch("/api/clinician/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          basicInfo: store.basicInfo,
-          npi: store.npi,
-          license: store.license,
-          malpractice: store.malpractice,
-          workHistory: store.workHistory,
-          education: store.education,
-          caqh: store.caqh,
-          references: store.references,
-          documents: store.documents,
+          basicInfo: latest.basicInfo,
+          npi: latest.npi,
+          license: latest.license,
+          malpractice: latest.malpractice,
+          workHistory: latest.workHistory,
+          education: latest.education,
+          caqh: latest.caqh,
+          references: latest.references,
+          documents: latest.documents,
           documentUrls,
-          disclosures: store.disclosures,
+          disclosures: latest.disclosures,
         }),
       });
 

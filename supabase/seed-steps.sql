@@ -69,7 +69,7 @@ INSERT INTO credentialing_steps (phase, step_number, title, description, url, do
 
 (2, '2.1', 'OHCA SoonerCare Group Enrollment',
  'Oklahoma Health Care Authority (OHCA) manages SoonerCare (Oklahoma Medicaid). You need group enrollment first, then individual clinician enrollment. This is the foundation for all Medicaid MCOs.',
- 'https://ohca.state.ok.us',
+ 'https://www.ohcaprovider.com/Enrollment/Site/Home/createuser.aspx',
  '["Type 2 NPI (group): 1871316414", "EIN: 99-4757524", "ODMHSAS license", "Clinician Type 1 NPI", "Clinician state license", "Signed provider agreement"]',
  '{"Portal": "Oklahoma Provider Enrollment Portal", "Enrollment Type": "Group Practice enrollment", "Group NPI": "1871316414", "Taxonomy": "Use group taxonomy code", "Service Location": "2510 E 15th St Suite 207, Tulsa OK 74104"}',
  'Hello, my name is Adam James and I''m calling from SafeHarbor Behavioral Health LLC. I''m calling to check on the status of our group provider enrollment application.\n\nOur group NPI is 1871316414 and our Tax ID is 99-4757524.\n\nCan you tell me the current status of our application? Is there anything else you need from us to complete the process?\n\n[Write down: name of person, reference number, any action items, callback date]',

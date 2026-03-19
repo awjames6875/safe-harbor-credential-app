@@ -31,6 +31,14 @@ export interface ParsedResume {
     issueDate: string | null;
     expiryDate: string | null;
   }[];
+  npiNumber: string | null;
+  references: {
+    name: string;
+    title: string;
+    specialty: string | null;
+    phone: string | null;
+    email: string | null;
+  }[];
   confidence: number;
 }
 
@@ -47,6 +55,8 @@ Return ONLY valid JSON matching this schema (no markdown, no explanation):
   "education": [{"school": "string", "degree": "string", "major": "string or null", "graduationDate": "YYYY-MM or null", "city": "string or null", "state": "string or null"}],
   "workHistory": [{"employer": "string", "address": "string or null", "title": "string", "startDate": "YYYY-MM or null", "endDate": "YYYY-MM or null", "isCurrent": boolean, "supervisorName": "string or null"}],
   "licenses": [{"type": "string", "number": "string or null", "state": "string (2-letter)", "issueDate": "YYYY-MM or null", "expiryDate": "YYYY-MM or null"}],
+  "npiNumber": "string (10 digits) or null",
+  "references": [{"name": "string", "title": "string", "specialty": "string or null", "phone": "string or null", "email": "string or null"}],
   "confidence": number between 0 and 1
 }
 
@@ -56,11 +66,12 @@ Rules:
 - Set isCurrent=true for current/present positions
 - Set confidence based on how much data you could extract (1.0 = everything clear, 0.5 = partial, 0.1 = mostly guessing)
 - If a field cannot be determined, use null
-- Focus on behavioral health credentials (LPC, LCSW, LMFT, LBP, LADC, PhD, PsyD)`;
+- Focus on behavioral health credentials (LPC, LCSW, LMFT, LBP, LADC, PhD, PsyD)
+- Extract NPI number (10-digit National Provider Identifier) if listed
+- Extract professional references with name, title, specialty, phone, and email`;
 
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  const mod = await import("pdf-parse");
-  const pdfParse = "default" in mod ? (mod.default as (b: Buffer) => Promise<{ text: string }>) : (mod as unknown as (b: Buffer) => Promise<{ text: string }>);
+  const pdfParse = (await import("pdf-parse")).default;
   const data = await pdfParse(buffer);
   return data.text;
 }
@@ -96,7 +107,7 @@ export async function parseResumeWithClaude(
   });
 
   const response = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 2000,
     messages: [
       {
@@ -111,6 +122,8 @@ export async function parseResumeWithClaude(
     throw new Error("Unexpected response format from Claude");
   }
 
-  const parsed: ParsedResume = JSON.parse(content.text);
+  // Strip markdown code fences if present (e.g., ```json ... ```)
+  const jsonText = content.text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "");
+  const parsed: ParsedResume = JSON.parse(jsonText);
   return parsed;
 }

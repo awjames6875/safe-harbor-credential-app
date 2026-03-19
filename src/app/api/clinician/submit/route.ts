@@ -249,14 +249,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Upload PDF to Supabase Storage
+    // Upload PDF to Supabase Storage (non-blocking — don't fail submission if storage unavailable)
     const pdfFileName = `caqh-cheatsheet-${clinicianId}.pdf`;
-    await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from("documents")
       .upload(pdfFileName, pdfBuffer, {
         contentType: "application/pdf",
         upsert: true,
       });
+    if (uploadError) {
+      console.error("CAQH PDF upload error:", uploadError);
+    }
 
     // Send email notification
     const clinicianName = `${data.basicInfo.firstName} ${data.basicInfo.lastName}`;

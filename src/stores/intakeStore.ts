@@ -196,7 +196,26 @@ export const useIntakeStore = create<IntakeState>()(
           licenseType: (lic.type as string) || state.license.licenseType,
           licenseNumber: (lic.number as string) || state.license.licenseNumber,
           licenseState: (lic.state as string) || state.license.licenseState,
+          licenseIssued: (lic.issueDate as string) || state.license.licenseIssued,
+          licenseExpiry: (lic.expiryDate as string) || state.license.licenseExpiry,
         };
+      }
+
+      if (parsed.npiNumber) {
+        updates.npi = {
+          ...state.npi,
+          npiType1: (parsed.npiNumber as string) || state.npi.npiType1,
+        };
+      }
+
+      if (Array.isArray(parsed.references) && parsed.references.length > 0) {
+        updates.references = parsed.references.map((r: Record<string, unknown>) => ({
+          name: (r.name as string) || "",
+          title: (r.title as string) || "",
+          specialty: (r.specialty as string) || "",
+          phone: (r.phone as string) || "",
+          email: (r.email as string) || "",
+        }));
       }
 
       return updates;
