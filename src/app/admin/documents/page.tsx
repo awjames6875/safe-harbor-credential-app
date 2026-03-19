@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import DocumentTable from "@/components/admin/DocumentTable";
 
 export default async function DocumentsPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: documents } = await supabase
     .from("documents")
