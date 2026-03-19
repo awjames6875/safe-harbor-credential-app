@@ -208,6 +208,26 @@ export const useIntakeStore = create<IntakeState>()(
         };
       }
 
+      if (parsed.caqhId) {
+        updates.caqh = {
+          hasCaqh: true,
+          caqhId: parsed.caqhId as string,
+        };
+      }
+
+      if (parsed.malpractice && typeof parsed.malpractice === "object") {
+        const m = parsed.malpractice as Record<string, string | null>;
+        updates.malpractice = {
+          ...state.malpractice,
+          malpracticeCarrier: m.carrier || state.malpractice.malpracticeCarrier,
+          malpracticePolicy: m.policyNumber || state.malpractice.malpracticePolicy,
+          malpracticePerClaim: m.perClaim || state.malpractice.malpracticePerClaim,
+          malpracticeAggregate: m.aggregate || state.malpractice.malpracticeAggregate,
+          malpracticeStart: m.startDate || state.malpractice.malpracticeStart,
+          malpracticeEnd: m.endDate || state.malpractice.malpracticeEnd,
+        };
+      }
+
       if (Array.isArray(parsed.references) && parsed.references.length > 0) {
         updates.references = parsed.references.map((r: Record<string, unknown>) => ({
           name: (r.name as string) || "",

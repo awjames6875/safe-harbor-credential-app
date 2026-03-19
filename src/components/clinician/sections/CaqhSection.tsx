@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import CaqhUpload from "../CaqhUpload";
 
 export default function CaqhSection() {
   const { caqh, updateCaqh, markSectionComplete, goNext, goBack } =
@@ -54,6 +55,7 @@ export default function CaqhSection() {
       </div>
 
       {hasCaqh && (
+        <>
         <div>
           <Label htmlFor="caqhId">
             CAQH Provider ID <span className="text-red-500">*</span>
@@ -72,6 +74,9 @@ export default function CaqhSection() {
           />
           {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
         </div>
+
+        <CaqhUpload />
+        </>
       )}
 
       {!hasCaqh && (
