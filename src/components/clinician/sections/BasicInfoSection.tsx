@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import MaskedInput from "@/components/shared/MaskedInput";
 
 export default function BasicInfoSection() {
-  const { basicInfo, updateBasicInfo, markSectionComplete, goNext, isResumeParsed } =
+  const { basicInfo, updateBasicInfo, markSectionComplete, goNext, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const {
@@ -35,18 +35,16 @@ export default function BasicInfoSection() {
   });
 
   useEffect(() => {
-    if (isResumeParsed) {
-      reset({
-        firstName: basicInfo.firstName || "",
-        lastName: basicInfo.lastName || "",
-        dob: basicInfo.dob || "",
-        ssn: basicInfo.ssn || "",
-        homeAddress: basicInfo.homeAddress || "",
-        phone: basicInfo.phone || "",
-        email: basicInfo.email || "",
-      });
-    }
-  }, [isResumeParsed, basicInfo, reset]);
+    reset({
+      firstName: basicInfo.firstName || "",
+      lastName: basicInfo.lastName || "",
+      dob: basicInfo.dob || "",
+      ssn: basicInfo.ssn || "",
+      homeAddress: basicInfo.homeAddress || "",
+      phone: basicInfo.phone || "",
+      email: basicInfo.email || "",
+    });
+  }, [isResumeParsed, resetVersion, basicInfo, reset]);
 
   const ssnValue = watch("ssn");
 

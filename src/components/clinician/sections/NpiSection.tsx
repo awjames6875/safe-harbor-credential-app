@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export default function NpiSection() {
-  const { npi, updateNpi, markSectionComplete, goNext, goBack, isResumeParsed } =
+  const { npi, updateNpi, markSectionComplete, goNext, goBack, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const {
@@ -27,13 +27,11 @@ export default function NpiSection() {
   });
 
   useEffect(() => {
-    if (isResumeParsed) {
-      reset({
-        npiType1: npi.npiType1 || "",
-        taxonomyCode: npi.taxonomyCode || "",
-      });
-    }
-  }, [isResumeParsed, npi, reset]);
+    reset({
+      npiType1: npi.npiType1 || "",
+      taxonomyCode: npi.taxonomyCode || "",
+    });
+  }, [isResumeParsed, resetVersion, npi, reset]);
 
   function onSubmit(data: NpiData) {
     updateNpi(data);

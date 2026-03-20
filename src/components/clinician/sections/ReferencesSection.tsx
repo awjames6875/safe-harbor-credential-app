@@ -17,7 +17,7 @@ const EMPTY_REF: ReferenceEntry = {
 };
 
 export default function ReferencesSection() {
-  const { references, setReferences, markSectionComplete, goNext, goBack, isResumeParsed } =
+  const { references, setReferences, markSectionComplete, goNext, goBack, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const [entries, setEntries] = useState<ReferenceEntry[]>(
@@ -29,8 +29,10 @@ export default function ReferencesSection() {
   useEffect(() => {
     if (isResumeParsed && references.length >= 3) {
       setEntries(references);
+    } else if (!isResumeParsed) {
+      setEntries([{ ...EMPTY_REF }, { ...EMPTY_REF }, { ...EMPTY_REF }]);
     }
-  }, [isResumeParsed, references]);
+  }, [isResumeParsed, resetVersion, references]);
   const [error, setError] = useState<string | null>(null);
 
   function updateEntry(index: number, field: keyof ReferenceEntry, value: string) {

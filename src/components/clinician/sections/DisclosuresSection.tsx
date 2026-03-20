@@ -53,7 +53,7 @@ interface DisclosuresSectionProps {
 }
 
 export default function DisclosuresSection({ onFinalSubmit }: DisclosuresSectionProps) {
-  const { disclosures, updateDisclosures, markSectionComplete, goBack, isResumeParsed } =
+  const { disclosures, updateDisclosures, markSectionComplete, goBack, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const {
@@ -76,17 +76,15 @@ export default function DisclosuresSection({ onFinalSubmit }: DisclosuresSection
   });
 
   useEffect(() => {
-    if (isResumeParsed) {
-      reset({
-        malpracticeClaim: disclosures.malpracticeClaim || false,
-        licenseAction: disclosures.licenseAction || false,
-        federalExclusion: disclosures.federalExclusion || false,
-        felony: disclosures.felony || false,
-        explanation: disclosures.explanation || "",
-        signedName: disclosures.signedName || "",
-      });
-    }
-  }, [isResumeParsed, disclosures, reset]);
+    reset({
+      malpracticeClaim: disclosures.malpracticeClaim || false,
+      licenseAction: disclosures.licenseAction || false,
+      federalExclusion: disclosures.federalExclusion || false,
+      felony: disclosures.felony || false,
+      explanation: disclosures.explanation || "",
+      signedName: disclosures.signedName || "",
+    });
+  }, [isResumeParsed, resetVersion, disclosures, reset]);
 
   const values = watch();
   const hasYes =

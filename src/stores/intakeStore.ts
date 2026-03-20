@@ -47,6 +47,7 @@ interface IntakeState {
   // Resume parsing
   isResumeParsed: boolean;
   resumeConfidence: number;
+  resetVersion: number;
 
   // Actions
   setCurrentSection: (section: number) => void;
@@ -86,6 +87,7 @@ const initialState = {
   disclosures: {},
   isResumeParsed: false,
   resumeConfidence: 0,
+  resetVersion: 0,
 };
 
 export const useIntakeStore = create<IntakeState>()(
@@ -241,7 +243,7 @@ export const useIntakeStore = create<IntakeState>()(
       return updates;
     }),
 
-  reset: () => set({ ...initialState, completedSections: new Set<number>(), documentFiles: { license: null, malpractice: null, photoId: null, cv: null } }),
+  reset: () => set((state) => ({ ...initialState, completedSections: new Set<number>(), documentFiles: { license: null, malpractice: null, photoId: null, cv: null }, resetVersion: state.resetVersion + 1 })),
     }),
     {
       name: "intake-form-draft",

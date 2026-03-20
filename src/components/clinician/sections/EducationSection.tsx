@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export default function EducationSection() {
-  const { education, updateEducation, markSectionComplete, goNext, goBack, isResumeParsed } =
+  const { education, updateEducation, markSectionComplete, goNext, goBack, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const {
@@ -29,15 +29,13 @@ export default function EducationSection() {
   });
 
   useEffect(() => {
-    if (isResumeParsed) {
-      reset({
-        schoolName: education.schoolName || "",
-        degree: education.degree || "",
-        major: education.major || "",
-        gradDate: education.gradDate || "",
-      });
-    }
-  }, [isResumeParsed, education, reset]);
+    reset({
+      schoolName: education.schoolName || "",
+      degree: education.degree || "",
+      major: education.major || "",
+      gradDate: education.gradDate || "",
+    });
+  }, [isResumeParsed, resetVersion, education, reset]);
 
   function onSubmit(data: EducationData) {
     updateEducation(data);

@@ -19,7 +19,7 @@ import {
 const LICENSE_TYPES = ["LPC", "LCSW", "LMFT", "LBP", "LADC", "PhD", "PsyD"];
 
 export default function LicenseSection() {
-  const { license, updateLicense, markSectionComplete, goNext, goBack, isResumeParsed } =
+  const { license, updateLicense, markSectionComplete, goNext, goBack, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const {
@@ -40,16 +40,14 @@ export default function LicenseSection() {
   });
 
   useEffect(() => {
-    if (isResumeParsed) {
-      reset({
-        licenseType: license.licenseType || "",
-        licenseNumber: license.licenseNumber || "",
-        licenseState: license.licenseState || "OK",
-        licenseIssued: license.licenseIssued || "",
-        licenseExpiry: license.licenseExpiry || "",
-      });
-    }
-  }, [isResumeParsed, license, reset]);
+    reset({
+      licenseType: license.licenseType || "",
+      licenseNumber: license.licenseNumber || "",
+      licenseState: license.licenseState || "OK",
+      licenseIssued: license.licenseIssued || "",
+      licenseExpiry: license.licenseExpiry || "",
+    });
+  }, [isResumeParsed, resetVersion, license, reset]);
 
   function onSubmit(data: LicenseData) {
     updateLicense(data);

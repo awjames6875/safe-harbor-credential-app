@@ -22,7 +22,7 @@ const EMPTY_ENTRY: WorkHistoryEntry = {
 };
 
 export default function WorkHistorySection() {
-  const { workHistory, setWorkHistory, markSectionComplete, goNext, goBack, isResumeParsed } =
+  const { workHistory, setWorkHistory, markSectionComplete, goNext, goBack, isResumeParsed, resetVersion } =
     useIntakeStore();
 
   const [entries, setEntries] = useState<WorkHistoryEntry[]>(
@@ -32,8 +32,10 @@ export default function WorkHistorySection() {
   useEffect(() => {
     if (isResumeParsed && workHistory.length > 0) {
       setEntries(workHistory);
+    } else if (!isResumeParsed) {
+      setEntries([{ ...EMPTY_ENTRY }]);
     }
-  }, [isResumeParsed, workHistory]);
+  }, [isResumeParsed, resetVersion, workHistory]);
   const [error, setError] = useState<string | null>(null);
 
   const gaps = detectWorkGaps(entries.filter((e) => e.employerName));
