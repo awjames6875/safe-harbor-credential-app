@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useIntakeStore } from "@/stores/intakeStore";
 import ResumeUpload from "./ResumeUpload";
 import CaqhUpload from "./CaqhUpload";
+import DocumentUploadCenter from "./DocumentUploadCenter";
 import SectionProgress from "./SectionProgress";
 import BasicInfoSection from "./sections/BasicInfoSection";
 import NpiSection from "./sections/NpiSection";
@@ -110,6 +111,10 @@ export default function IntakeForm() {
   }
 
   const CurrentSectionComponent = SECTIONS[currentSection];
+
+  if (!store.hasCompletedDocumentUpload) {
+    return <DocumentUploadCenter />;
+  }
 
   if (isSubmitting) {
     return (

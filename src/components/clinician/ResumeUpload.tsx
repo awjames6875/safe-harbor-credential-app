@@ -6,7 +6,11 @@ import { useIntakeStore } from "@/stores/intakeStore";
 
 type UploadState = "idle" | "dragging" | "parsing" | "success" | "error";
 
-export default function ResumeUpload() {
+interface ResumeUploadProps {
+  onFileSelected?: (file: File) => void;
+}
+
+export default function ResumeUpload({ onFileSelected }: ResumeUploadProps = {}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<UploadState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -14,6 +18,7 @@ export default function ResumeUpload() {
   const { prefillFromResume } = useIntakeStore();
 
   async function handleFile(file: File) {
+    onFileSelected?.(file);
     setState("parsing");
     setErrorMessage("");
 

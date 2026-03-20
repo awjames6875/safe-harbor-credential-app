@@ -44,6 +44,9 @@ interface IntakeState {
   documentFiles: Record<DocumentKey, File | null>;
   disclosures: Partial<DisclosuresData>;
 
+  // Document upload center
+  hasCompletedDocumentUpload: boolean;
+
   // Resume parsing
   isResumeParsed: boolean;
   resumeConfidence: number;
@@ -67,6 +70,7 @@ interface IntakeState {
   setDocumentFile: (type: DocumentKey, file: File | null) => void;
   updateDisclosures: (data: Partial<DisclosuresData>) => void;
 
+  setHasCompletedDocumentUpload: (value: boolean) => void;
   prefillFromResume: (data: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -85,6 +89,7 @@ const initialState = {
   documents: { license: null, malpractice: null, photoId: null, cv: null },
   documentFiles: { license: null, malpractice: null, photoId: null, cv: null },
   disclosures: {},
+  hasCompletedDocumentUpload: false,
   isResumeParsed: false,
   resumeConfidence: 0,
   resetVersion: 0,
@@ -147,6 +152,8 @@ export const useIntakeStore = create<IntakeState>()(
 
   updateDisclosures: (data) =>
     set((state) => ({ disclosures: { ...state.disclosures, ...data } })),
+
+  setHasCompletedDocumentUpload: (value) => set({ hasCompletedDocumentUpload: value }),
 
   prefillFromResume: (data) =>
     set((state) => {
@@ -243,7 +250,7 @@ export const useIntakeStore = create<IntakeState>()(
       return updates;
     }),
 
-  reset: () => set((state) => ({ ...initialState, completedSections: new Set<number>(), documentFiles: { license: null, malpractice: null, photoId: null, cv: null }, resetVersion: state.resetVersion + 1 })),
+  reset: () => set((state) => ({ ...initialState, completedSections: new Set<number>(), documentFiles: { license: null, malpractice: null, photoId: null, cv: null }, hasCompletedDocumentUpload: false, resetVersion: state.resetVersion + 1 })),
     }),
     {
       name: "intake-form-draft",
