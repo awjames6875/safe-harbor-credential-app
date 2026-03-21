@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import DeleteClinicianButton from "@/components/admin/DeleteClinicianButton";
 import DownloadAllDocumentsButton from "@/components/admin/DownloadAllDocumentsButton";
+import ClinicianNotes from "@/components/admin/ClinicianNotes";
 
 export default async function ClinicianDetailPage({
   params,
@@ -288,6 +289,8 @@ export default async function ClinicianDetailPage({
         </Card>
       )}
     
+      <ClinicianNotes clinicianId={id} />
+
       {documents.length > 0 && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
