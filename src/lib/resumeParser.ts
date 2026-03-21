@@ -124,6 +124,10 @@ export async function parseResumeWithClaude(
 
   // Strip markdown code fences if present (e.g., ```json ... ```)
   const jsonText = content.text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "");
-  const parsed: ParsedResume = JSON.parse(jsonText);
-  return parsed;
+  try {
+    return JSON.parse(jsonText) as ParsedResume;
+  } catch {
+    console.error("Resume parse JSON error. Raw response:", content.text);
+    throw new Error("Failed to parse resume data from AI response");
+  }
 }

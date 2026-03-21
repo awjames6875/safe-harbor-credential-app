@@ -63,7 +63,15 @@ export async function parseLicenseWithClaude(
   }
 
   const jsonText = block.text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "");
-  return JSON.parse(jsonText) as ParsedLicense;
+  try {
+    return JSON.parse(jsonText) as ParsedLicense;
+  } catch {
+    console.error("License parse JSON error. Raw response:", block.text);
+    return {
+      licenseType: null, licenseNumber: null, licenseState: null,
+      licenseIssued: null, licenseExpiry: null, confidence: 0,
+    };
+  }
 }
 
 export async function parseLicenseFromBuffer(

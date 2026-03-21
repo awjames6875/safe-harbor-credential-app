@@ -65,7 +65,16 @@ export async function parseMalpracticeCertWithClaude(
   }
 
   const jsonText = block.text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "");
-  return JSON.parse(jsonText) as ParsedMalpracticeCert;
+  try {
+    return JSON.parse(jsonText) as ParsedMalpracticeCert;
+  } catch {
+    console.error("Malpractice parse JSON error. Raw response:", block.text);
+    return {
+      malpracticeCarrier: null, malpracticePolicy: null,
+      malpracticePerClaim: null, malpracticeAggregate: null,
+      malpracticeStart: null, malpracticeEnd: null, confidence: 0,
+    };
+  }
 }
 
 export async function parseMalpracticeCertFromBuffer(

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle } from "lucide-react";
 import { useIntakeStore } from "@/stores/intakeStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,12 +10,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import CaqhUpload from "../CaqhUpload";
 
 export default function CaqhSection() {
-  const { caqh, updateCaqh, markSectionComplete, goNext, goBack } =
+  const { caqh, updateCaqh, markSectionComplete, goNext, goBack, isResumeParsed } =
     useIntakeStore();
 
   const [hasCaqh, setHasCaqh] = useState(caqh.hasCaqh);
   const [caqhId, setCaqhId] = useState(caqh.caqhId);
   const [error, setError] = useState<string | null>(null);
+
+  // If CAQH was already parsed from uploaded document, show summary instead of upload
+  const caqhAlreadyParsed = isResumeParsed && caqh.caqhId !== "";
 
   function handleSubmit() {
     if (hasCaqh && caqhId) {
@@ -75,7 +79,16 @@ export default function CaqhSection() {
           {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
         </div>
 
-        <CaqhUpload />
+        {caqhAlreadyParsed ? (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
+            <p className="text-sm text-emerald-800">
+              CAQH profile already uploaded and parsed from your documents.
+            </p>
+          </div>
+        ) : (
+          <CaqhUpload />
+        )}
         </>
       )}
 

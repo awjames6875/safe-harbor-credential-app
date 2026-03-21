@@ -67,6 +67,15 @@ interface SubmissionData {
   documentUrls?: Record<string, string>;
 }
 
+function normalizeDate(value: string | undefined | null): string | null {
+  if (!value || value.trim() === "") return null;
+  // YYYY-MM format → YYYY-MM-01
+  if (/^\d{4}-\d{2}$/.test(value)) return `${value}-01`;
+  // Already YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const data: SubmissionData = await request.json();
@@ -100,7 +109,7 @@ export async function POST(request: NextRequest) {
         last_name: data.basicInfo.lastName,
         email: data.basicInfo.email,
         phone: data.basicInfo.phone,
-        dob: data.basicInfo.dob || null,
+        dob: normalizeDate(data.basicInfo.dob),
         ssn_encrypted: ssnEncrypted,
         home_address: data.basicInfo.homeAddress,
         npi_type1: data.npi.npiType1,
@@ -108,19 +117,19 @@ export async function POST(request: NextRequest) {
         license_type: data.license.licenseType,
         license_number: data.license.licenseNumber,
         license_state: data.license.licenseState,
-        license_issued: data.license.licenseIssued || null,
-        license_expiry: data.license.licenseExpiry || null,
+        license_issued: normalizeDate(data.license.licenseIssued),
+        license_expiry: normalizeDate(data.license.licenseExpiry),
         malpractice_carrier: data.malpractice.malpracticeCarrier,
         malpractice_policy: data.malpractice.malpracticePolicy,
         malpractice_per_claim: data.malpractice.malpracticePerClaim,
         malpractice_aggregate: data.malpractice.malpracticeAggregate,
-        malpractice_start: data.malpractice.malpracticeStart || null,
-        malpractice_end: data.malpractice.malpracticeEnd || null,
+        malpractice_start: normalizeDate(data.malpractice.malpracticeStart),
+        malpractice_end: normalizeDate(data.malpractice.malpracticeEnd),
         caqh_id: data.caqh.caqhId || null,
         school_name: data.education.schoolName,
         degree: data.education.degree,
         major: data.education.major || null,
-        grad_date: data.education.gradDate || null,
+        grad_date: normalizeDate(data.education.gradDate),
         portal_submitted: true,
         portal_submitted_at: new Date().toISOString(),
         intake_complete: true,
@@ -130,7 +139,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (clinicianError) {
-      console.error("Clinician insert error:", clinicianError);
+      console.error("Clinician insert error:", clinicianError.message, clinicianError.details, clinicianError.hint);
       return NextResponse.json(
         { error: "Failed to save clinician data" },
         { status: 500 }
@@ -148,8 +157,8 @@ export async function POST(request: NextRequest) {
         job_title: w.jobTitle,
         supervisor_name: w.supervisorName || null,
         supervisor_phone: w.supervisorPhone || null,
-        start_date: w.startDate || null,
-        end_date: w.endDate || null,
+        start_date: normalizeDate(w.startDate),
+        end_date: normalizeDate(w.endDate),
         reason_leaving: w.reasonLeaving || null,
         is_current: w.isCurrent,
       }));

@@ -12,6 +12,13 @@ import type {
 } from "@/lib/validations/clinician";
 import { TOTAL_SECTIONS } from "@/lib/validations/clinician";
 
+// Normalize YYYY-MM → YYYY-MM-01 so HTML date inputs work correctly
+function normalizeDate(value: string | null | undefined): string {
+  if (!value || value.trim() === "") return "";
+  if (/^\d{4}-\d{2}$/.test(value)) return `${value}-01`;
+  return value;
+}
+
 interface UploadedFile {
   name: string;
   type: string;
@@ -181,8 +188,8 @@ export const useIntakeStore = create<IntakeState>()(
           employerAddress: (w.address as string) || "",
           jobTitle: (w.title as string) || "",
           supervisorName: (w.supervisorName as string) || "",
-          startDate: (w.startDate as string) || "",
-          endDate: (w.endDate as string) || "",
+          startDate: normalizeDate(w.startDate as string),
+          endDate: normalizeDate(w.endDate as string),
           isCurrent: (w.isCurrent as boolean) || false,
         }));
       }
@@ -194,7 +201,7 @@ export const useIntakeStore = create<IntakeState>()(
           schoolName: (edu.school as string) || state.education.schoolName,
           degree: (edu.degree as string) || state.education.degree,
           major: (edu.major as string) || state.education.major,
-          gradDate: (edu.graduationDate as string) || state.education.gradDate,
+          gradDate: normalizeDate(edu.graduationDate as string) || state.education.gradDate,
         };
       }
 
@@ -205,8 +212,8 @@ export const useIntakeStore = create<IntakeState>()(
           licenseType: (lic.type as string) || state.license.licenseType,
           licenseNumber: (lic.number as string) || state.license.licenseNumber,
           licenseState: (lic.state as string) || state.license.licenseState,
-          licenseIssued: (lic.issueDate as string) || state.license.licenseIssued,
-          licenseExpiry: (lic.expiryDate as string) || state.license.licenseExpiry,
+          licenseIssued: normalizeDate(lic.issueDate as string) || state.license.licenseIssued,
+          licenseExpiry: normalizeDate(lic.expiryDate as string) || state.license.licenseExpiry,
         };
       }
 
@@ -232,8 +239,8 @@ export const useIntakeStore = create<IntakeState>()(
           malpracticePolicy: m.policyNumber || state.malpractice.malpracticePolicy,
           malpracticePerClaim: m.perClaim || state.malpractice.malpracticePerClaim,
           malpracticeAggregate: m.aggregate || state.malpractice.malpracticeAggregate,
-          malpracticeStart: m.startDate || state.malpractice.malpracticeStart,
-          malpracticeEnd: m.endDate || state.malpractice.malpracticeEnd,
+          malpracticeStart: normalizeDate(m.startDate) || state.malpractice.malpracticeStart,
+          malpracticeEnd: normalizeDate(m.endDate) || state.malpractice.malpracticeEnd,
         };
       }
 
