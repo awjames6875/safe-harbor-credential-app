@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { encryptSSN } from "@/lib/encryption";
 import { generateCaqhCheatSheet } from "@/lib/caqhPdfGenerator";
 import { sendSubmissionNotification } from "@/lib/email";
@@ -13,8 +13,18 @@ interface SubmissionData {
     homeAddress: string;
     phone: string;
     email: string;
+    gender?: string;
+    languages?: string;
+    formerNames?: string;
   };
   npi: { npiType1: string; taxonomyCode: string };
+  specialties?: {
+    primarySpecialty?: string;
+    boardCertification?: string;
+    certifyingBoard?: string;
+    certificationDate?: string;
+    certificationExpiry?: string;
+  };
   license: {
     licenseType: string;
     licenseNumber: string;
@@ -46,6 +56,7 @@ interface SubmissionData {
     degree: string;
     major?: string;
     gradDate: string;
+    schoolAddress?: string;
   };
   caqh: { hasCaqh: boolean; caqhId: string };
   references: {
@@ -54,6 +65,8 @@ interface SubmissionData {
     specialty?: string;
     phone: string;
     email: string;
+    organization?: string;
+    yearsKnown?: string;
   }[];
   documents?: Record<string, { name: string; type: string; size: number } | null>;
   disclosures: {
@@ -94,7 +107,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Encrypt SSN
     const ssnEncrypted = data.basicInfo.ssn
@@ -112,6 +125,9 @@ export async function POST(request: NextRequest) {
         dob: normalizeDate(data.basicInfo.dob),
         ssn_encrypted: ssnEncrypted,
         home_address: data.basicInfo.homeAddress,
+        gender: data.basicInfo.gender || null,
+        languages: data.basicInfo.languages || null,
+        former_names: data.basicInfo.formerNames || null,
         npi_type1: data.npi.npiType1,
         taxonomy_code: data.npi.taxonomyCode,
         license_type: data.license.licenseType,
@@ -130,6 +146,12 @@ export async function POST(request: NextRequest) {
         degree: data.education.degree,
         major: data.education.major || null,
         grad_date: normalizeDate(data.education.gradDate),
+        school_address: data.education.schoolAddress || null,
+        primary_specialty: data.specialties?.primarySpecialty || null,
+        board_certification: data.specialties?.boardCertification || null,
+        certifying_board: data.specialties?.certifyingBoard || null,
+        certification_date: normalizeDate(data.specialties?.certificationDate),
+        certification_expiry: normalizeDate(data.specialties?.certificationExpiry),
         portal_submitted: true,
         portal_submitted_at: new Date().toISOString(),
         intake_complete: true,
@@ -174,6 +196,8 @@ export async function POST(request: NextRequest) {
         specialty: r.specialty || null,
         phone: r.phone,
         email: r.email,
+        organization: r.organization || null,
+        years_known: r.yearsKnown ? parseInt(r.yearsKnown, 10) : null,
       }));
       await supabase.from("professional_references").insert(refRows);
     }
@@ -219,6 +243,9 @@ export async function POST(request: NextRequest) {
       homeAddress: data.basicInfo.homeAddress,
       phone: data.basicInfo.phone,
       email: data.basicInfo.email,
+      gender: data.basicInfo.gender || "",
+      languages: data.basicInfo.languages || "",
+      formerNames: data.basicInfo.formerNames || "",
       npiType1: data.npi.npiType1,
       taxonomyCode: data.npi.taxonomyCode,
       licenseType: data.license.licenseType,
@@ -237,9 +264,17 @@ export async function POST(request: NextRequest) {
       degree: data.education.degree,
       major: data.education.major || "",
       gradDate: data.education.gradDate,
+      schoolAddress: data.education.schoolAddress || "",
+      primarySpecialty: data.specialties?.primarySpecialty || "",
+      boardCertification: data.specialties?.boardCertification || "",
+      certifyingBoard: data.specialties?.certifyingBoard || "",
+      certificationDate: data.specialties?.certificationDate || "",
+      certificationExpiry: data.specialties?.certificationExpiry || "",
       workHistory: data.workHistory.map((w) => ({
         employerName: w.employerName,
+        employerAddress: w.employerAddress || "",
         jobTitle: w.jobTitle,
+        supervisorName: w.supervisorName || "",
         startDate: w.startDate,
         endDate: w.endDate || "",
         isCurrent: w.isCurrent,
@@ -249,6 +284,8 @@ export async function POST(request: NextRequest) {
         title: r.title,
         phone: r.phone,
         email: r.email,
+        organization: r.organization || "",
+        yearsKnown: r.yearsKnown || "",
       })),
       disclosures: {
         malpracticeClaim: data.disclosures.malpracticeClaim,

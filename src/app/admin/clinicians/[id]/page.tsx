@@ -6,6 +6,7 @@ import ExpiryCountdown from "@/components/shared/ExpiryCountdown";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import DeleteClinicianButton from "@/components/admin/DeleteClinicianButton";
+import DownloadAllDocumentsButton from "@/components/admin/DownloadAllDocumentsButton";
 
 export default async function ClinicianDetailPage({
   params,
@@ -289,8 +290,12 @@ export default async function ClinicianDetailPage({
     
       {documents.length > 0 && (
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">Uploaded Documents</CardTitle>
+            <DownloadAllDocumentsButton
+              documents={documents.map((d) => ({ file_url: d.file_url, file_name: d.file_name }))}
+              clinicianName={`${clinician.first_name}-${clinician.last_name}`}
+            />
           </CardHeader>
           <CardContent>
             <div className="space-y-2">

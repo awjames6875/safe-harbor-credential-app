@@ -36,6 +36,9 @@ export const basicInfoSchema = z.object({
       "Enter a valid US phone number"
     ),
   email: z.string().email("Enter a valid email address"),
+  gender: z.string().min(1, "Gender is required"),
+  languages: z.string().min(1, "At least one language is required"),
+  formerNames: z.string().optional(),
 });
 
 // Section 2: NPI Number
@@ -109,6 +112,16 @@ export const educationSchema = z.object({
   degree: z.string().min(1, "Degree is required"),
   major: z.string().optional(),
   gradDate: z.string().min(1, "Graduation date is required"),
+  schoolAddress: z.string().optional(),
+});
+
+// Section 6.5: Specialties & Board Certification
+export const specialtiesSchema = z.object({
+  primarySpecialty: z.string().min(1, "Primary specialty is required"),
+  boardCertification: z.string().optional(),
+  certifyingBoard: z.string().optional(),
+  certificationDate: z.string().optional(),
+  certificationExpiry: z.string().optional(),
 });
 
 // Section 7: CAQH ProView
@@ -132,6 +145,8 @@ export const referenceEntrySchema = z.object({
   specialty: z.string().optional(),
   phone: z.string().min(1, "Phone is required"),
   email: z.string().email("Enter a valid email"),
+  organization: z.string().optional(),
+  yearsKnown: z.string().optional(),
 });
 
 export const referencesSchema = z.object({
@@ -172,6 +187,7 @@ export const SECTION_LABELS = [
   "Malpractice",
   "Work History",
   "Education",
+  "Specialties",
   "CAQH",
   "References",
   "Documents",
@@ -188,6 +204,7 @@ export type MalpracticeData = z.infer<typeof malpracticeSchema>;
 export type WorkHistoryEntry = z.infer<typeof workHistoryEntrySchema>;
 export type WorkHistoryData = z.infer<typeof workHistorySchema>;
 export type EducationData = z.infer<typeof educationSchema>;
+export type SpecialtiesData = z.infer<typeof specialtiesSchema>;
 export type CaqhData = z.infer<typeof caqhSchema>;
 export type ReferenceEntry = z.infer<typeof referenceEntrySchema>;
 export type ReferencesData = z.infer<typeof referencesSchema>;

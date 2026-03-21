@@ -95,7 +95,7 @@ export default function DisclosuresSection({ onFinalSubmit }: DisclosuresSection
 
   function onSubmit(data: DisclosuresData) {
     updateDisclosures(data);
-    markSectionComplete(9);
+    markSectionComplete(10);
     if (onFinalSubmit) onFinalSubmit();
   }
 

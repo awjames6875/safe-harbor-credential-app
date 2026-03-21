@@ -14,6 +14,8 @@ const EMPTY_REF: ReferenceEntry = {
   specialty: "",
   phone: "",
   email: "",
+  organization: "",
+  yearsKnown: "",
 };
 
 export default function ReferencesSection() {
@@ -58,7 +60,7 @@ export default function ReferencesSection() {
     }
     setError(null);
     setReferences(valid);
-    markSectionComplete(7);
+    markSectionComplete(8);
     goNext();
   }
 
@@ -112,12 +114,22 @@ export default function ReferencesSection() {
             </div>
           </div>
 
-          <div>
-            <Label>Specialty</Label>
-            <Input
-              value={entry.specialty || ""}
-              onChange={(e) => updateEntry(index, "specialty", e.target.value)}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <Label>Specialty</Label>
+              <Input
+                value={entry.specialty || ""}
+                onChange={(e) => updateEntry(index, "specialty", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Organization</Label>
+              <Input
+                placeholder="Where they work"
+                value={entry.organization || ""}
+                onChange={(e) => updateEntry(index, "organization", e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -135,6 +147,16 @@ export default function ReferencesSection() {
                 type="email"
                 value={entry.email}
                 onChange={(e) => updateEntry(index, "email", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Years Known</Label>
+              <Input
+                type="number"
+                min="0"
+                placeholder="e.g., 5"
+                value={entry.yearsKnown || ""}
+                onChange={(e) => updateEntry(index, "yearsKnown", e.target.value)}
               />
             </div>
           </div>

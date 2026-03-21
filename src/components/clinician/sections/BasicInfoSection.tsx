@@ -31,6 +31,9 @@ export default function BasicInfoSection() {
       homeAddress: basicInfo.homeAddress || "",
       phone: basicInfo.phone || "",
       email: basicInfo.email || "",
+      gender: basicInfo.gender || "",
+      languages: basicInfo.languages || "",
+      formerNames: basicInfo.formerNames || "",
     },
   });
 
@@ -43,6 +46,9 @@ export default function BasicInfoSection() {
       homeAddress: basicInfo.homeAddress || "",
       phone: basicInfo.phone || "",
       email: basicInfo.email || "",
+      gender: basicInfo.gender || "",
+      languages: basicInfo.languages || "",
+      formerNames: basicInfo.formerNames || "",
     });
   }, [isResumeParsed, resetVersion, basicInfo, reset]);
 
@@ -139,6 +145,42 @@ export default function BasicInfoSection() {
             <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
           )}
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="gender">
+            Gender <span className="text-red-500">*</span>
+          </Label>
+          <select
+            id="gender"
+            {...register("gender")}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Non-binary">Non-binary</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+          {errors.gender && (
+            <p className="text-xs text-red-500 mt-1">{errors.gender.message}</p>
+          )}
+        </div>
+        <div>
+          <Label htmlFor="languages">
+            Languages Spoken <span className="text-red-500">*</span>
+          </Label>
+          <Input id="languages" placeholder="e.g., English, Spanish" {...register("languages")} />
+          {errors.languages && (
+            <p className="text-xs text-red-500 mt-1">{errors.languages.message}</p>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="formerNames">Former / Maiden Names</Label>
+        <Input id="formerNames" placeholder="Leave blank if N/A" {...register("formerNames")} />
       </div>
 
       <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">

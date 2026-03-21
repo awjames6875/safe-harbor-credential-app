@@ -19,7 +19,7 @@ interface Document {
   uploaded_at: string;
 }
 
-export default function DocumentTable({ documents }: { documents: Document[] }) {
+export default function DocumentTable({ documents, clinicianNames = {} }: { documents: Document[]; clinicianNames?: Record<string, string> }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"clinician" | "organization">("clinician");
   const [showUpload, setShowUpload] = useState(false);
@@ -190,6 +190,7 @@ export default function DocumentTable({ documents }: { documents: Document[] }) 
             <thead>
               <tr className="border-b border-slate-200 text-left text-xs text-slate-500 uppercase tracking-wider">
                 <th className="py-3 px-3">Type</th>
+                {activeTab === "clinician" && <th className="py-3 px-3">Owner</th>}
                 <th className="py-3 px-3">File</th>
                 <th className="py-3 px-3">Size</th>
                 <th className="py-3 px-3">Expiry</th>
@@ -201,6 +202,11 @@ export default function DocumentTable({ documents }: { documents: Document[] }) 
               {filtered.map((doc) => (
                 <tr key={doc.id} className="border-b border-slate-100 hover:bg-slate-50">
                   <td className="py-3 px-3 font-medium">{doc.document_type}</td>
+                  {activeTab === "clinician" && (
+                    <td className="py-3 px-3 text-slate-600">
+                      {doc.owner_id ? clinicianNames[doc.owner_id] || "—" : "—"}
+                    </td>
+                  )}
                   <td className="py-3 px-3 text-slate-600 max-w-[200px] truncate">{doc.file_name}</td>
                   <td className="py-3 px-3 text-slate-500">{formatSize(doc.file_size)}</td>
                   <td className="py-3 px-3">

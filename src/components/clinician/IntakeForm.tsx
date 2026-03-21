@@ -11,6 +11,7 @@ import LicenseSection from "./sections/LicenseSection";
 import MalpracticeSection from "./sections/MalpracticeSection";
 import WorkHistorySection from "./sections/WorkHistorySection";
 import EducationSection from "./sections/EducationSection";
+import SpecialtiesSection from "./sections/SpecialtiesSection";
 import CaqhSection from "./sections/CaqhSection";
 import ReferencesSection from "./sections/ReferencesSection";
 import DocumentsSection from "./sections/DocumentsSection";
@@ -23,6 +24,7 @@ const SECTIONS = [
   MalpracticeSection,
   WorkHistorySection,
   EducationSection,
+  SpecialtiesSection,
   CaqhSection,
   ReferencesSection,
   DocumentsSection,
@@ -84,6 +86,7 @@ export default function IntakeForm() {
           malpractice: latest.malpractice,
           workHistory: latest.workHistory,
           education: latest.education,
+          specialties: latest.specialties,
           caqh: latest.caqh,
           references: latest.references,
           documents: latest.documents,

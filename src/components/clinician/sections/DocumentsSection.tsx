@@ -15,7 +15,7 @@ export default function DocumentsSection() {
 
   function handleSubmit() {
     if (!hasRequired) return;
-    markSectionComplete(8);
+    markSectionComplete(9);
     goNext();
   }
 

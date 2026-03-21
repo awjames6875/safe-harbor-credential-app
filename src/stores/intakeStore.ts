@@ -7,6 +7,7 @@ import type {
   MalpracticeData,
   WorkHistoryEntry,
   EducationData,
+  SpecialtiesData,
   ReferenceEntry,
   DisclosuresData,
 } from "@/lib/validations/clinician";
@@ -40,6 +41,7 @@ interface IntakeState {
   malpractice: Partial<MalpracticeData>;
   workHistory: WorkHistoryEntry[];
   education: Partial<EducationData>;
+  specialties: Partial<SpecialtiesData>;
   caqh: { hasCaqh: boolean; caqhId: string };
   references: ReferenceEntry[];
   documents: {
@@ -71,6 +73,7 @@ interface IntakeState {
   updateMalpractice: (data: Partial<MalpracticeData>) => void;
   setWorkHistory: (entries: WorkHistoryEntry[]) => void;
   updateEducation: (data: Partial<EducationData>) => void;
+  updateSpecialties: (data: Partial<SpecialtiesData>) => void;
   updateCaqh: (data: { hasCaqh: boolean; caqhId: string }) => void;
   setReferences: (refs: ReferenceEntry[]) => void;
   setDocument: (type: keyof IntakeState["documents"], file: UploadedFile | null) => void;
@@ -91,6 +94,7 @@ const initialState = {
   malpractice: {},
   workHistory: [] as WorkHistoryEntry[],
   education: {},
+  specialties: {},
   caqh: { hasCaqh: false, caqhId: "" },
   references: [] as ReferenceEntry[],
   documents: { license: null, malpractice: null, photoId: null, cv: null },
@@ -142,6 +146,9 @@ export const useIntakeStore = create<IntakeState>()(
 
   updateEducation: (data) =>
     set((state) => ({ education: { ...state.education, ...data } })),
+
+  updateSpecialties: (data) =>
+    set((state) => ({ specialties: { ...state.specialties, ...data } })),
 
   updateCaqh: (data) => set({ caqh: data }),
 
@@ -251,6 +258,8 @@ export const useIntakeStore = create<IntakeState>()(
           specialty: (r.specialty as string) || "",
           phone: (r.phone as string) || "",
           email: (r.email as string) || "",
+          organization: (r.organization as string) || "",
+          yearsKnown: (r.yearsKnown as string) || "",
         }));
       }
 

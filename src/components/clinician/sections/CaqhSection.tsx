@@ -29,7 +29,7 @@ export default function CaqhSection() {
     }
     setError(null);
     updateCaqh({ hasCaqh, caqhId: hasCaqh ? caqhId : "" });
-    markSectionComplete(6);
+    markSectionComplete(7);
     goNext();
   }
 

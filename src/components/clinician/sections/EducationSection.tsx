@@ -25,6 +25,7 @@ export default function EducationSection() {
       degree: education.degree || "",
       major: education.major || "",
       gradDate: education.gradDate || "",
+      schoolAddress: education.schoolAddress || "",
     },
   });
 
@@ -34,6 +35,7 @@ export default function EducationSection() {
       degree: education.degree || "",
       major: education.major || "",
       gradDate: education.gradDate || "",
+      schoolAddress: education.schoolAddress || "",
     });
   }, [isResumeParsed, resetVersion, education, reset]);
 
@@ -88,12 +90,17 @@ export default function EducationSection() {
         )}
       </div>
 
+      <div>
+        <Label htmlFor="schoolAddress">School City / State</Label>
+        <Input id="schoolAddress" placeholder="e.g., Austin, TX" {...register("schoolAddress")} />
+      </div>
+
       <div className="flex gap-3">
         <Button type="button" variant="outline" onClick={goBack} className="flex-1">
           Back
         </Button>
         <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
-          Next: CAQH
+          Next: Specialties
         </Button>
       </div>
     </form>
